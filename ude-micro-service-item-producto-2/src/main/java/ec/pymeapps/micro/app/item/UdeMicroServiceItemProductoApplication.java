@@ -2,6 +2,7 @@ package ec.pymeapps.micro.app.item;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -17,13 +18,14 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *  Asi mismo al añadir eureka-client, ya no es necesaria
  *  la anotacion @RibbonClient(name = "pymeapps.servicio.producto")
  *  
- *  
+ * para habilitar hystrix se añade @EnableCircuitBreaker  
  * 
  * @author Editor
  *
  */
 
 //@RibbonClient(name = "pymeapps.servicio.producto")
+@EnableCircuitBreaker
 @EnableEurekaClient
 @EnableFeignClients
 @SpringBootApplication
