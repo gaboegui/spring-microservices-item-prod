@@ -12,17 +12,21 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import ec.pymeapps.micro.app.item.models.Item;
-import ec.pymeapps.micro.app.item.models.Producto;
 import ec.pymeapps.micro.app.item.models.service.ItemService;
 
-
+import ec.pymeapps.micro.commons.app.models.entity.Producto;
 
 /**
  * @RefreshScope forza a que se consulten de nuevo los datos del
@@ -41,10 +45,11 @@ import ec.pymeapps.micro.app.item.models.service.ItemService;
 @RestController
 public class ItemController {
 	
-	//@Qualifier("serviceRestTemplate")
+	
 	@Autowired
 	@Qualifier("servicio-Productos-Feign")
-	private ItemService service;
+	//@Qualifier("serviceRestTemplate")
+	private ItemService itemService;
 	
 	
 	// lee la propiedad obtenida por el servidor de configuracion
@@ -56,6 +61,13 @@ public class ItemController {
 	@Autowired
 	Environment env;
 	
+	
+	/**
+	 * Metodo para verificar variabes de configuracion obtenidas del Config Server
+	 * 
+	 * @param puerto
+	 * @return
+	 */
 	@GetMapping("/obtener-config")
 	public ResponseEntity<?> obtenerConfig(@Value("${server.port}") String puerto){
 		
@@ -76,7 +88,7 @@ public class ItemController {
 	
 	@GetMapping("/listar")
 	public List<Item> listar(){
-		return service.findAll();
+		return itemService.findAll();
 	}
 	
 	
@@ -92,7 +104,7 @@ public class ItemController {
 	@GetMapping("/ver/{id}/cantidad/{cantidad}")
 	public Item ver(@PathVariable(name = "id") Long productoId, @PathVariable Integer cantidad){
 		
-		return service.findById(productoId, cantidad);
+		return itemService.findById(productoId, cantidad);
 	}
 
 	public Item metodoAlternativo(Long productoId, Integer cantidad){
@@ -105,5 +117,31 @@ public class ItemController {
 		
 		return item;
 	}
+	
+	/**
+	 * @RequestBody hace que se copie el objeto JSON del request en producto
+	 * 
+	 * @param producto
+	 * @return
+	 */
+	@PostMapping("/crear")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	public Producto crearProducto(@RequestBody Producto producto) {
+		return itemService.save(producto);
+	}
+	
+	@PutMapping("/editar/{id}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Producto editar(@RequestBody Producto producto,
+			@PathVariable Long id) {
+		return itemService.update(producto, id);
+	}
+	
+	@DeleteMapping("/eliminar/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void eliminar(@PathVariable Long id) {
+		itemService.delete(id);
+	}
+	
 
 }

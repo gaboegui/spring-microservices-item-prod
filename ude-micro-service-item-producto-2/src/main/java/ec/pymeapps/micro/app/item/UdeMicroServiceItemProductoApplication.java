@@ -1,7 +1,9 @@
 package ec.pymeapps.micro.app.item;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -20,7 +22,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  *  
  * para habilitar hystrix se añade @EnableCircuitBreaker  
  * 
- * @author Editor
+ * @EnableAutoConfiguration es necesario ya que la Clase Producto en este 
+ * servicio es un simple POJO sin conexion a la BD 
+ * 
+ * @author Gabriel Eguiguren
  *
  */
 
@@ -29,6 +34,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableEurekaClient
 @EnableFeignClients
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class UdeMicroServiceItemProductoApplication {
 
 	public static void main(String[] args) {

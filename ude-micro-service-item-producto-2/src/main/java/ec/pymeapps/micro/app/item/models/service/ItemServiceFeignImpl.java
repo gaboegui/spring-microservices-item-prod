@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import ec.pymeapps.micro.app.item.clientes.ProductoClienteRest;
 import ec.pymeapps.micro.app.item.models.Item;
 
+import ec.pymeapps.micro.commons.app.models.entity.Producto;
+
 
 /**
  * Crea la clase utilizanco Feign, se anota como @Primary para que sea 
@@ -33,6 +35,24 @@ public class ItemServiceFeignImpl implements ItemService {
 	@Override
 	public Item findById(Long id, Integer cantidad) {
 		return new Item(clienteFeign.ver(id), cantidad);
+	}
+
+	@Override
+	public Producto save(Producto producto) {
+		
+		return clienteFeign.crearProducto(producto);
+	}
+
+	@Override
+	public Producto update(Producto producto, Long id) {
+		
+		return clienteFeign.update(producto, id);
+	}
+
+	@Override
+	public void delete(Long id) {
+		clienteFeign.eliminar(id);
+		
 	}
 
 }

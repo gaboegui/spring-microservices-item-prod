@@ -2,6 +2,10 @@ package ec.pymeapps.micro.app.item.models;
 
 import java.math.BigDecimal;
 
+import ec.pymeapps.micro.commons.app.models.entity.Producto;
+
+
+
 public class Item {
 
 	private Producto producto;
